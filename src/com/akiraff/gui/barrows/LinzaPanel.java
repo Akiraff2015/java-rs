@@ -1,7 +1,11 @@
 package com.akiraff.gui.barrows;
 
+import com.akiraff.api.Item;
+
 import javax.swing.*;
 import java.awt.*;
+import java.sql.*;
+import java.util.ArrayList;
 
 //Linza the disgraced
 public class LinzaPanel extends JPanel{
@@ -30,11 +34,33 @@ public class LinzaPanel extends JPanel{
     private JLabel hammerImageLabel = new JLabel(hammerImage);
     private JLabel shieldImageLabel = new JLabel(shieldImage);
 
+    private int linzaListId[] = {37433, 37437, 37441, 37445, 37449};
+    private ArrayList<Item> itemList = new ArrayList<>();
+
     private GridBagConstraints c = new GridBagConstraints();
 
     public LinzaPanel() {
         setLayout(new GridBagLayout());
+        getInfo();
         addComponents();
+    }
+
+    private void getInfo() {
+        String sql = "SELECT * FROM BarrowsTable WHERE id = ?";
+
+        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            for (int i : linzaListId) {
+                pstmt.setInt(1, i);
+                ResultSet rs = pstmt.executeQuery();
+
+                while(rs.next()) {
+                    itemList.add(new Item(rs.getInt("id"), rs.getDouble("price"), rs.getString("short_price"), rs.getString("name")));
+                }
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     private void addComponents() {
@@ -42,8 +68,9 @@ public class LinzaPanel extends JPanel{
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(10, 5, 0, 0);
-        c.anchor = GridBagConstraints.LINE_END;
+        c.anchor = GridBagConstraints.NORTHWEST;
         add(helmImageLabel, c);
+        helmImageLabel.setToolTipText(itemList.get(0).getShortPrice());
 
         //label helm
         c.gridx = 1;
@@ -59,6 +86,7 @@ public class LinzaPanel extends JPanel{
         c.gridx = 0;
         c.gridy = 1;
         add(cuirassImageLabel, c);
+        cuirassImageLabel.setToolTipText(itemList.get(1).getShortPrice());
 
         //label cuirass
         c.gridx = 1;
@@ -74,6 +102,7 @@ public class LinzaPanel extends JPanel{
         c.gridx = 0;
         c.gridy = 2;
         add(greavesImageLabel, c);
+        greavesImageLabel.setToolTipText(itemList.get(2).getShortPrice());
 
         //label greaves
         c.gridx = 1;
@@ -89,6 +118,7 @@ public class LinzaPanel extends JPanel{
         c.gridx = 0;
         c.gridy = 3;
         add(hammerImageLabel, c);
+        hammerImageLabel.setToolTipText(itemList.get(3).getShortPrice());
 
         //label hammer
         c.gridx = 1;
@@ -114,5 +144,23 @@ public class LinzaPanel extends JPanel{
         c.gridx = 2;
         c.gridy = 4;
         add(shieldInput, c);
+
+        c.weightx = 1;
+        c.weighty = 1;
+        add(new JLabel(""), c);
+    }
+
+    private Connection connect() {
+        String url = "jdbc:sqlite:C:\\Users\\User\\IdeaProjects\\project\\test.db";
+        Connection conn = null;
+
+        try {
+            conn = DriverManager.getConnection(url);
+        }
+
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return conn;
     }
 }

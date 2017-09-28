@@ -44,9 +44,8 @@ public class DharokPanel extends JPanel {
         String sql = "SELECT * FROM BarrowsTable WHERE id = ?";
 
         try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            for (int i = 0; i < dharokListId.length; i++) {
-                pstmt.setInt(1, dharokListId[i]);
-
+            for (int i : dharokListId) {
+                pstmt.setInt(1, i);
                 ResultSet rs = pstmt.executeQuery();
 
                 while (rs.next()) {

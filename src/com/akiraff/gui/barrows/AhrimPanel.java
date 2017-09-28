@@ -56,9 +56,8 @@ public class AhrimPanel extends JPanel{
         String sql = "SELECT * FROM BarrowsTable WHERE id = ?";
 
         try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            for (int i = 0; i < ahrimListId.length; i++) {
-                pstmt.setInt(1, ahrimListId[i]);
-
+            for (int i : ahrimListId) {
+                pstmt.setInt(1, i);
                 ResultSet rs = pstmt.executeQuery();
 
                 while (rs.next()) {

@@ -1,7 +1,11 @@
 package com.akiraff.gui.barrows;
 
+import com.akiraff.api.Item;
+
 import javax.swing.*;
 import java.awt.*;
+import java.sql.*;
+import java.util.ArrayList;
 
 // Karil the tainted
 public class KarilPanel extends JPanel {
@@ -34,11 +38,32 @@ public class KarilPanel extends JPanel {
     private JLabel pistolCrossbowImageLabel = new JLabel(pistolCrossbowImage);
     private JLabel offPistolCrossBowImageLabel = new JLabel(offPistolCrossbowImage);
 
+    private int karilListId[] = {4732, 4736, 4738, 4734, 25918, 25895};
+    private ArrayList<Item> itemList = new ArrayList<>();
+
     private GridBagConstraints c = new GridBagConstraints();
 
     public KarilPanel() {
         setLayout(new GridBagLayout());
+        getInfo();
         addComponents();
+    }
+
+    private void getInfo() {
+        String sql = "SELECT * FROM BarrowsTable WHERE id = ?";
+
+        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            for (int i : karilListId) {
+                pstmt.setInt(1, i);
+                ResultSet rs = pstmt.executeQuery();
+
+                while(rs.next()) {
+                    itemList.add(new Item(rs.getInt("id"), rs.getDouble("price"), rs.getString("short_price"), rs.getString("name")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void addComponents() {
@@ -46,8 +71,9 @@ public class KarilPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(10, 5, 0, 0);
-        c.anchor = GridBagConstraints.LINE_END;
+        c.anchor = GridBagConstraints.NORTHWEST;
         add(coifImageLabel, c);
+        coifImageLabel.setToolTipText(itemList.get(0).getShortPrice());
 
         //label coif
         c.gridx = 1;
@@ -63,6 +89,7 @@ public class KarilPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 1;
         add(topImageLabel, c);
+        topImageLabel.setToolTipText(itemList.get(1).getShortPrice());
 
         //label top
         c.gridx = 1;
@@ -78,6 +105,7 @@ public class KarilPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 2;
         add(skirtImageLabel, c);
+        skirtImageLabel.setToolTipText(itemList.get(2).getShortPrice());
 
         //label skirt
         c.gridx = 1;
@@ -93,6 +121,7 @@ public class KarilPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 3;
         add(crossbowImageLabel, c);
+        crossbowImageLabel.setToolTipText(itemList.get(3).getShortPrice());
 
         //label crossbow
         c.gridx = 1;
@@ -108,6 +137,7 @@ public class KarilPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 4;
         add(pistolCrossbowImageLabel, c);
+        pistolCrossbowImageLabel.setToolTipText(itemList.get(4).getShortPrice());
 
         //label pistol crossbow
         c.gridx = 1;
@@ -123,6 +153,7 @@ public class KarilPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 5;
         add(offPistolCrossBowImageLabel, c);
+        offPistolCrossBowImageLabel.setToolTipText(itemList.get(5).getShortPrice());
 
         //label off-hand pistol crossbow
         c.gridx = 1;
@@ -134,6 +165,22 @@ public class KarilPanel extends JPanel {
         c.gridy = 5;
         add(offPistolCrossbowInput, c);
 
+        c.weightx = 1;
+        c.weighty = 1;
+        add(new JLabel(""), c);
+    }
 
+    private Connection connect() {
+        String url = "jdbc:sqlite:C:\\Users\\User\\IdeaProjects\\project\\test.db";
+        Connection conn = null;
+
+        try {
+            conn = DriverManager.getConnection(url);
+        }
+
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return conn;
     }
 }

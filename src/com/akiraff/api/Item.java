@@ -77,7 +77,7 @@ public class Item {
         }
 
         if ("k".equals(lastChar)) {
-            return Double.parseDouble(stringValue) * 10000;
+            return Double.parseDouble(stringValue) * 1000;
         }
         return -1;
     }

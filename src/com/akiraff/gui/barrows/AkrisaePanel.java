@@ -44,13 +44,11 @@ public class AkrisaePanel extends JPanel {
         String sql = "SELECT * FROM BarrowsTable WHERE id = ?";
 
         try(Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            for (int i = 0; i < akrisaeListId.length; i++) {
-                pstmt.setInt(1, akrisaeListId[i]);
-
+            for (int i : akrisaeListId) {
+                pstmt.setInt(1, i);
                 ResultSet rs = pstmt.executeQuery();
 
                 while (rs.next()) {
-                    System.out.println(rs.getString("name"));
                     itemList.add(new Item(rs.getInt("id"), rs.getDouble("price"), rs.getString("short_price"), rs.getString("name")));
                 }
             }

@@ -4,9 +4,7 @@ import com.akiraff.api.Item;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 // Guthan the infested
@@ -31,7 +29,7 @@ public class GuthanPanel extends JPanel {
     private JLabel chainskirtImageLabel = new JLabel(chainskirtImage);
     private JLabel warspearImageLabel = new JLabel(warspearImage);
 
-    private int guthanListId;
+    private int guthanListId[] = {4724, 4728, 4730, 4726};
     private ArrayList<Item> itemList = new ArrayList<>();
 
     private GridBagConstraints c = new GridBagConstraints();
@@ -44,6 +42,19 @@ public class GuthanPanel extends JPanel {
 
     private void getInfo() {
         String sql = "SELECT * FROM BarrowsTable WHERE id = ?";
+
+        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            for (int i : guthanListId) {
+                pstmt.setInt(1, i);
+                ResultSet rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    itemList.add(new Item(rs.getInt("id"), rs.getDouble("price"), rs.getString("short_price"), rs.getString("name")));
+                }
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void addComponents() {
@@ -53,6 +64,7 @@ public class GuthanPanel extends JPanel {
         c.insets = new Insets(10, 5, 0, 0);
         c.anchor = GridBagConstraints.NORTHWEST;
         add(helmImageLabel, c);
+        helmImageLabel.setToolTipText(itemList.get(0).getShortPrice());
 
         //label helm
         c.gridx = 1;
@@ -68,6 +80,7 @@ public class GuthanPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 1;
         add(platebodyImageLabel, c);
+        platebodyImageLabel.setToolTipText(itemList.get(1).getShortPrice());
 
         //label platebody
         c.gridx = 1;
@@ -83,6 +96,7 @@ public class GuthanPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 2;
         add(chainskirtImageLabel, c);
+        chainskirtImageLabel.setToolTipText(itemList.get(2).getShortPrice());
 
         //label chainskirt
         c.gridx = 1;
@@ -98,6 +112,7 @@ public class GuthanPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 3;
         add(warspearImageLabel, c);
+        warspearImageLabel.setToolTipText(itemList.get(3).getShortPrice());
 
         //label warspear
         c.gridx = 1;

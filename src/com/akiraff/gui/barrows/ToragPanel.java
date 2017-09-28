@@ -1,7 +1,11 @@
 package com.akiraff.gui.barrows;
 
+import com.akiraff.api.Item;
+
 import javax.swing.*;
 import java.awt.*;
+import java.sql.*;
+import java.util.ArrayList;
 
 // Torag the corrupted
 public class ToragPanel extends JPanel {
@@ -25,11 +29,32 @@ public class ToragPanel extends JPanel {
     private JLabel platelegsImageLabel = new JLabel(platelegsImage);
     private JLabel hammerImageLabel = new JLabel(hammerImage);
 
+    private int toragListId[] = {4745, 4749, 4751, 4747};
+    private ArrayList<Item> itemList = new ArrayList<>();
+
     private GridBagConstraints c = new GridBagConstraints();
 
     public ToragPanel() {
         setLayout(new GridBagLayout());
+        getInfo();
         addComponents();
+    }
+
+    private void getInfo() {
+        String sql = "SELECT * FROM BarrowsTable WHERE id = ?";
+
+        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            for (int i : toragListId) {
+                pstmt.setInt(1, i);
+                ResultSet rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    itemList.add(new Item(rs.getInt("id"), rs.getDouble("price"), rs.getString("short_price"), rs.getString("name")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void addComponents() {
@@ -37,7 +62,9 @@ public class ToragPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(10, 5, 0, 0);
+        c.anchor = GridBagConstraints.NORTHWEST;
         add(helmImageLabel, c);
+        helmImageLabel.setToolTipText(itemList.get(0).getShortPrice());
 
         //label helm
         c.gridx = 1;
@@ -53,6 +80,7 @@ public class ToragPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 1;
         add(platebodyImageLabel, c);
+        platebodyImageLabel.setToolTipText(itemList.get(1).getShortPrice());
 
         //label platebody
         c.gridx = 1;
@@ -68,6 +96,7 @@ public class ToragPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 2;
         add(platelegsImageLabel, c);
+        platelegsImageLabel.setToolTipText(itemList.get(2).getShortPrice());
 
         //label platelegs
         c.gridx = 1;
@@ -83,6 +112,7 @@ public class ToragPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 3;
         add(hammerImageLabel, c);
+        hammerImageLabel.setToolTipText(itemList.get(3).getShortPrice());
 
         //label hammer
         c.gridx = 1;
@@ -93,5 +123,23 @@ public class ToragPanel extends JPanel {
         c.gridx = 2;
         c.gridy = 3;
         add(hammerInput, c);
+
+        c.weightx = 1;
+        c.weighty = 1;
+        add(new JLabel(""), c);
+    }
+
+    private Connection connect() {
+        String url = "jdbc:sqlite:C:\\Users\\User\\IdeaProjects\\project\\test.db";
+        Connection conn = null;
+
+        try {
+            conn = DriverManager.getConnection(url);
+        }
+
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return conn;
     }
 }
