@@ -3,13 +3,9 @@ package com.akiraff.gui;
 import com.akiraff.gui.barrows.*;
 import com.akiraff.gui.components.SettingMenu;
 import com.akiraff.user.Session;
-import com.akiraff.Contact;
 
 import javax.swing.*;
 import java.awt.*;
-
-import java.sql.*;
-import java.util.ArrayList;
 
 public class WindowPanel implements Runnable{
     private Session session = null;
@@ -38,9 +34,16 @@ public class WindowPanel implements Runnable{
     // Tabs
     private JTabbedPane tabPane = new JTabbedPane();
 
-    // Menu
-    private JMenuBar menuBar = new JMenuBar();
-    private JMenu settingsMenu = new JMenu("Settings");
+    private AhrimPanel ahrimPanel = AhrimPanel.getInstance();
+    private AkrisaePanel akrisaePanel = AkrisaePanel.getInstance();
+    private DharokPanel dharokPanel = DharokPanel.getInstance();
+    private GuthanPanel guthanPanel = GuthanPanel.getInstance();
+    private KarilPanel karilPanel = KarilPanel.getInstance();
+    private LinzaPanel linzaPanel = LinzaPanel.getInstance();
+    private ToragPanel toragPanel = ToragPanel.getInstance();
+    private VeracPanel veracPanel = VeracPanel.getInstance();
+
+    //Get text
 
     public WindowPanel(Session session) {
         this.session = session;
@@ -51,7 +54,10 @@ public class WindowPanel implements Runnable{
         if (session.getLogin()) {
             addBtn.addActionListener(e -> System.out.println("hello world"));
 
-            getDataBtn.addActionListener(e -> selectAll());
+            getDataBtn.addActionListener(e ->  {
+                BarrowsLog a = BarrowsLog.getInstance();
+                a.getItem();
+            });
             addComponents();
         } else {
             setWindow(false);
@@ -123,14 +129,15 @@ public class WindowPanel implements Runnable{
 
         // Tabs
         tabPane.addTab("Rune", panel);
-        tabPane.addTab("Ahrim", new AhrimPanel());
-        tabPane.addTab("Akrisae", new AkrisaePanel());
-        tabPane.addTab("Guthan", new GuthanPanel());
-        tabPane.addTab("Karil",  new KarilPanel());
-        tabPane.addTab("Torag", new ToragPanel());
-        tabPane.addTab("Linza", new LinzaPanel());
-        tabPane.addTab("Dharok", new DharokPanel());
-        tabPane.addTab("Verac", new VeracPanel());
+        tabPane.addTab("Ahrim", ahrimPanel);
+        tabPane.addTab("Akrisae", akrisaePanel);
+        tabPane.addTab("Guthan", guthanPanel);
+        tabPane.addTab("Karil",  karilPanel);
+        tabPane.addTab("Torag", toragPanel);
+        tabPane.addTab("Linza", linzaPanel);
+        tabPane.addTab("Dharok", dharokPanel);
+        tabPane.addTab("Verac", veracPanel);
+        tabPane.addTab("Log", new LogPanel());
 
         frame.add(tabPane);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -139,52 +146,6 @@ public class WindowPanel implements Runnable{
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
 
-    }
-
-    private void selectAll() {
-        String sql = "SELECT * FROM contacts";
-        ArrayList<Contact> listContacts = new ArrayList<>();
-
-        try (Connection conn = this.connect(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                listContacts.add(new Contact(rs.getString("name"), rs.getInt("phone"), rs.getString("email")));
-            }
-
-            for (Contact c : listContacts) {
-                System.out.println("[CONSOLE]: " + c.getName());
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void insert(String name, Integer phone, String email) {
-        String sql = "INSERT INTO contacts (name, phone, email) VALUES (?, ?, ?)";
-
-        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            pstmt.setInt(2, phone);
-            pstmt.setString(3, email);
-            pstmt.executeUpdate();
-            System.out.println("[CONSOLE]: Data inserted.");
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private Connection connect() {
-        String url = "jdbc:sqlite:C:\\Users\\User\\IdeaProjects\\project\\test.db";
-        Connection conn = null;
-
-        try {
-            conn = DriverManager.getConnection(url);
-        }
-
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return conn;
     }
 
     private void setWindow(int width, int height, boolean p) {

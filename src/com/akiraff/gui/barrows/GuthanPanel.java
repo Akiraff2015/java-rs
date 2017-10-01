@@ -1,6 +1,7 @@
 package com.akiraff.gui.barrows;
 
 import com.akiraff.api.Item;
+import com.akiraff.gui.BarrowsLog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 
 // Guthan the infested
 public class GuthanPanel extends JPanel {
+    private static GuthanPanel ourInstance = new GuthanPanel();
+
     private JLabel helmLabel = new JLabel("Guthan's helm: ");
     private JLabel platebodyLabel = new JLabel("Guthan's platebody: ");
     private JLabel chainskirtLabel = new JLabel("Guthan's chainskirt: ");
@@ -34,10 +37,48 @@ public class GuthanPanel extends JPanel {
 
     private GridBagConstraints c = new GridBagConstraints();
 
-    public GuthanPanel() {
+    private GuthanPanel() {
         setLayout(new GridBagLayout());
         getInfo();
         addComponents();
+    }
+
+    public static GuthanPanel getInstance() {
+        return ourInstance;
+    }
+
+    public void getTextInput() {
+        BarrowsLog log = BarrowsLog.getInstance();
+
+        if (!helmInput.getText().equals("")) {
+            log.addItem(itemList.get(0), Integer.parseInt(helmInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(0).getName() + " " + helmInput.getText() + "x to loot.");
+        }
+
+        if (!platebodyInput.getText().equals("")) {
+            log.addItem(itemList.get(1), Integer.parseInt(platebodyInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(1).getName() + " " + platebodyInput.getText() + "x to loot.");
+        }
+
+        if (!chainskirtInput.getText().equals("")) {
+            log.addItem(itemList.get(2), Integer.parseInt(chainskirtInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(2).getName() + " " + chainskirtInput.getText() + "x to loot.");
+        }
+
+        if (!warspearInput.getText().equals("")) {
+            log.addItem(itemList.get(3), Integer.parseInt(warspearInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(3).getName() + " " + warspearInput.getText() + "x to loot.");
+
+        } else {
+          System.out.println("[CONSOLE]: Guthan's loot is empty!");
+        }
+    }
+
+    public void resetText() {
+        helmInput.setText("");
+        platebodyInput.setText("");
+        chainskirtInput.setText("");
+        warspearInput.setText("");
     }
 
     private void getInfo() {

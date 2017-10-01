@@ -1,6 +1,7 @@
 package com.akiraff.gui.barrows;
 
 import com.akiraff.api.Item;
+import com.akiraff.gui.BarrowsLog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 
 //Verac the defiled
 public class VeracPanel extends JPanel{
+
+    private static VeracPanel ourInstance = new VeracPanel();
 
     private JLabel helmLabel = new JLabel("Verac's helm: ");
     private JLabel brassardLabel = new JLabel("Verac's brassard: ");
@@ -35,14 +38,54 @@ public class VeracPanel extends JPanel{
 
     private GridBagConstraints c = new GridBagConstraints();
 
-    public VeracPanel() {
+    public static VeracPanel getInstance() {
+        return ourInstance;
+    }
+
+    private VeracPanel() {
+        setBorder(BorderFactory.createTitledBorder("Verac the Defiled"));
         setLayout(new GridBagLayout());
         getInfo();
         addComponents();
     }
 
+    public void getTextInput() {
+        BarrowsLog log = BarrowsLog.getInstance();
+
+        if (!helmInput.getText().equals("")) {
+            log.addItem(itemList.get(0), Integer.parseInt(helmInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(0).getName() + " " + helmInput.getText() + "x to loot!");
+        }
+
+        if (!brassardInput.getText().equals("")) {
+            log.addItem(itemList.get(1), Integer.parseInt(brassardInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(1).getName() + " " + brassardInput.getText() + "x to loot.");
+        }
+
+        if (!plateskirtInput.getText().equals("")) {
+            log.addItem(itemList.get(2), Integer.parseInt(plateskirtInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(2).getName() + " " + plateskirtInput.getText() + "x to loot.");
+        }
+
+        if (!flailInput.getText().equals("")) {
+            log.addItem(itemList.get(3), Integer.parseInt(flailInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(3).getName() + " " + flailInput.getText() + "x to loot.");
+        }
+
+        else {
+            System.out.println("[CONSOLE]: Verac's loot is empty.");
+        }
+    }
+
+    public void resetText() {
+        helmInput.setText("");
+        brassardInput.setText("");
+        plateskirtInput.setText("");
+        flailInput.setText("");
+    }
+
     private void getInfo() {
-        String sql = "SELECT * FROM BarrowsTable WHERE id = ?";
+        String sql = "SELECT id, price, short_price, name FROM BarrowsTable WHERE id = ?";
 
         try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             for (int i : veractListId) {
@@ -50,7 +93,6 @@ public class VeracPanel extends JPanel{
                 ResultSet rs = pstmt.executeQuery();
 
                 while (rs.next()) {
-                    System.out.println(rs.getString("name"));
                     itemList.add(new Item(rs.getInt("id"), rs.getDouble("price"), rs.getString("short_price"), rs.getString("name")));
                 }
             }

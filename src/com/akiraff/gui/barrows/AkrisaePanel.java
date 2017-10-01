@@ -1,6 +1,7 @@
 package com.akiraff.gui.barrows;
 
 import com.akiraff.api.Item;
+import com.akiraff.gui.BarrowsLog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,9 @@ import java.util.ArrayList;
 
 //Akrisae the Doomed
 public class AkrisaePanel extends JPanel {
+
+    private static AkrisaePanel ourInstance = new AkrisaePanel();
+
     private JLabel hoodLabel = new JLabel("Akrisae's hood: ");
     private JLabel robeTopLabel = new JLabel("Akrisae's robe top: ");
     private JLabel robeSkirtLabel = new JLabel("Akrisae's robe skirt: ");
@@ -34,10 +38,48 @@ public class AkrisaePanel extends JPanel {
 
     private GridBagConstraints c = new GridBagConstraints();
 
-    public AkrisaePanel() {
+    public static AkrisaePanel getInstance() {
+        return ourInstance;
+    }
+
+    private AkrisaePanel() {
+        setBorder(BorderFactory.createTitledBorder("Akrisae the Doomed"));
         setLayout(new GridBagLayout());
         getInfo();
         addComponents();
+    }
+
+    public void getTextInput() {
+        BarrowsLog log = BarrowsLog.getInstance();
+
+        if (!hoodInput.getText().equals("")) {
+            log.addItem(itemList.get(0), Integer.parseInt(hoodInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(0).getName() + " " + hoodInput.getText() + "x to loot.");
+        }
+
+        if (!robeTopInput.getText().equals("")) {
+            log.addItem(itemList.get(1), Integer.parseInt(robeTopInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(1).getName() + " " + robeTopInput.getText() + "x to loot.");
+        }
+
+        if (!robeSkirtInput.getText().equals("")) {
+            log.addItem(itemList.get(2), Integer.parseInt(robeSkirtInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(2).getName() + " " + robeSkirtInput.getText() + "x to loot.");
+        }
+
+        if (!warMaceInput.getText().equals("")) {
+            log.addItem(itemList.get(3), Integer.parseInt(warMaceInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(3).getName() + " " + warMaceInput.getText() + "x to loot.");
+        } else {
+            System.out.println("[CONSOLE]: Akrisae's loot is empty!");
+        }
+    }
+
+    public void resetText() {
+        hoodInput.setText("");
+        robeTopInput.setText("");
+        robeSkirtInput.setText("");
+        warMaceInput.setText("");
     }
 
     private void getInfo() {

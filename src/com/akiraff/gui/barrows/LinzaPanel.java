@@ -1,6 +1,7 @@
 package com.akiraff.gui.barrows;
 
 import com.akiraff.api.Item;
+import com.akiraff.gui.BarrowsLog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 
 //Linza the disgraced
 public class LinzaPanel extends JPanel{
+
+    private static LinzaPanel ourInstance = new LinzaPanel();
 
     private JLabel helmLabel = new JLabel("Linza's helm: ");
     private JLabel cuirassLabel = new JLabel("Linza's cuirass: ");
@@ -39,7 +42,51 @@ public class LinzaPanel extends JPanel{
 
     private GridBagConstraints c = new GridBagConstraints();
 
-    public LinzaPanel() {
+    public static LinzaPanel getInstance() {
+        return ourInstance;
+    }
+
+    public void getTextInput() {
+        BarrowsLog log = BarrowsLog.getInstance();
+
+        if (!helmInput.getText().equals("")) {
+            log.addItem(itemList.get(0), Integer.parseInt(helmInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(0).getName() + " " + helmInput.getText() + "x to loot.");
+        }
+
+        if (!cuirassInput.getText().equals("")) {
+            log.addItem(itemList.get(1), Integer.parseInt(cuirassInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(1).getName() + " " + cuirassInput.getText() + "x to loot.");
+        }
+
+        if (!greavesInput.getText().equals("")) {
+            log.addItem(itemList.get(2), Integer.parseInt(greavesInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(2).getName() + " " + greavesInput.getText() + "x to loot.");
+        }
+
+        if (!hammerInput.getText().equals("")) {
+            log.addItem(itemList.get(3), Integer.parseInt(hammerInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(3).getName() + " " + hammerInput.getText() + "x to loot.");
+        }
+
+        if (!shieldInput.getText().equals("")) {
+            log.addItem(itemList.get(4), Integer.parseInt(shieldInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(4).getName() + " " + shieldInput.getText() + "x to loot.");
+
+        } else {
+            System.out.println("[CONSOLE]: Linza's loot is empty!");
+        }
+    }
+
+    public void resetText() {
+        helmInput.setText("");
+        cuirassInput.setText("");
+        greavesInput.setText("");
+        hammerInput.setText("");
+        shieldInput.setText("");
+    }
+
+    private LinzaPanel() {
         setLayout(new GridBagLayout());
         getInfo();
         addComponents();

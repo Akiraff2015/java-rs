@@ -1,14 +1,18 @@
 package com.akiraff.gui.barrows;
 
 import com.akiraff.api.Item;
+import com.akiraff.gui.BarrowsLog;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 
 // Ahrim the Blighted
 public class AhrimPanel extends JPanel{
+
+    private static AhrimPanel ourIstance = new AhrimPanel();
 
     // Labels
     private JLabel hoodLabel = new JLabel("Ahrim's hood: ");
@@ -46,10 +50,62 @@ public class AhrimPanel extends JPanel{
 
     private GridBagConstraints c = new GridBagConstraints();
 
-    public AhrimPanel() {
+    public static AhrimPanel getInstance() {
+        return ourIstance;
+    }
+
+    public void getTextInput() {
+        BarrowsLog log = BarrowsLog.getInstance();
+
+        if (!hoodInput.getText().equals("")) {
+            log.addItem(itemList.get(0), Integer.parseInt(hoodInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(0).getName() + " " + hoodInput.getText() + "x to loot." );
+        }
+
+        if (!robeInput.getText().equals("")) {
+            log.addItem(itemList.get(1), Integer.parseInt(robeInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(1).getName() + " " + robeInput.getText() + "x to loot.");
+        }
+
+        if (!robeSkirtInput.getText().equals("")) {
+            log.addItem(itemList.get(2), Integer.parseInt(robeSkirtInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(2).getName() + " " + robeSkirtInput.getText() + "x to loot.");
+        }
+
+        if (!wandInput.getText().equals("")) {
+            log.addItem(itemList.get(3), Integer.parseInt(wandInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(3).getName() + " " + wandInput.getText() + "x to loot.");
+        }
+
+        if (!staffInput.getText().equals("")) {
+            log.addItem(itemList.get(4), Integer.parseInt(staffInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(4).getName() + " " + wandInput.getText() + "x to loot.");
+        }
+
+        if (!bookOfMagicInput.getText().equals("")) {
+            log.addItem(itemList.get(5), Integer.parseInt(bookOfMagicInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(5).getName() + " " + bookOfMagicInput.getText() + "x to loot.");
+
+        } else {
+            System.out.println("[CONSOLE]: Ahrim's loot is empty!");
+        }
+    }
+
+    public void resetText() {
+        hoodInput.setText("");
+        robeInput.setText("");
+        robeSkirtInput.setText("");
+        wandInput.setText("");
+        staffInput.setText("");
+        bookOfMagicInput.setText("");
+    }
+
+    private AhrimPanel() {
+        setBorder(BorderFactory.createTitledBorder("Ahrim the Blighted"));
         setLayout(new GridBagLayout());
         getInfo();
         addComponents();
+
     }
 
     private void getInfo() {

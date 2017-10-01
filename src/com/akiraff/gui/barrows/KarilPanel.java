@@ -1,6 +1,7 @@
 package com.akiraff.gui.barrows;
 
 import com.akiraff.api.Item;
+import com.akiraff.gui.BarrowsLog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 
 // Karil the tainted
 public class KarilPanel extends JPanel {
+
+    private static KarilPanel ourInstance = new KarilPanel();
 
     private JLabel coifLabel = new JLabel("Karil's coif: ");
     private JLabel topLabel = new JLabel("Karil's top: ");
@@ -43,10 +46,60 @@ public class KarilPanel extends JPanel {
 
     private GridBagConstraints c = new GridBagConstraints();
 
-    public KarilPanel() {
+    private KarilPanel() {
         setLayout(new GridBagLayout());
         getInfo();
         addComponents();
+    }
+
+    public void getTextInput() {
+        BarrowsLog log = BarrowsLog.getInstance();
+
+        if (!coifInput.getText().equals("")) {
+            log.addItem(itemList.get(0), Integer.parseInt(coifInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(0).getName() + " " + coifInput.getText() + "x to loot.");
+        }
+
+        if (!topInput.getText().equals("")) {
+            log.addItem(itemList.get(1), Integer.parseInt(topInput.getText()));
+            System.out.println("[CONSOLE]: Added" + itemList.get(1).getName() + " " + topInput.getText() + "x to loot.");
+        }
+
+        if (!skirtInput.getText().equals("")) {
+            log.addItem(itemList.get(2), Integer.parseInt(skirtInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(2).getName() + " " + skirtInput.getText() + "x to loot.");
+        }
+
+        if (!crossbowInput.getText().equals("")) {
+            log.addItem(itemList.get(3), Integer.parseInt(crossbowInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(3).getName() + " " + crossbowInput.getText() + "x to loot.");
+        }
+
+        if (!pistolCrossbowInput.getText().equals("")) {
+            log.addItem(itemList.get(4), Integer.parseInt(pistolCrossbowInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(4).getName() + " " + pistolCrossbowInput.getText() + "x to loot.");
+        }
+
+        if (!offPistolCrossbowInput.getText().equals("")) {
+            log.addItem(itemList.get(5), Integer.parseInt(offPistolCrossbowInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(5).getName() + " " + offPistolCrossbowInput.getText() + "x to loot.");
+
+        } else {
+            System.out.println("[CONSOLE]: Karil's loot is empty!");
+        }
+    }
+
+    public void resetText() {
+        coifInput.setText("");
+        topInput.setText("");
+        skirtInput.setText("");
+        crossbowInput.setText("");
+        pistolCrossbowInput.setText("");
+        offPistolCrossbowInput.setText("");
+    }
+
+    public static KarilPanel getInstance() {
+        return ourInstance;
     }
 
     private void getInfo() {

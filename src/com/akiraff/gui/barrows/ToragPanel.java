@@ -1,6 +1,7 @@
 package com.akiraff.gui.barrows;
 
 import com.akiraff.api.Item;
+import com.akiraff.gui.BarrowsLog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,9 @@ import java.util.ArrayList;
 
 // Torag the corrupted
 public class ToragPanel extends JPanel {
+
+    private static ToragPanel ourInstance = new ToragPanel();
+
     private JLabel helmLabel = new JLabel("Torag's helm: ");
     private JLabel platebodyLabel = new JLabel("Torag's platebody: ");
     private JLabel platelegsLabel = new JLabel("Torag's platelegs: ");
@@ -34,10 +38,48 @@ public class ToragPanel extends JPanel {
 
     private GridBagConstraints c = new GridBagConstraints();
 
-    public ToragPanel() {
+    private ToragPanel() {
         setLayout(new GridBagLayout());
         getInfo();
         addComponents();
+    }
+
+    public static ToragPanel getInstance() {
+        return ourInstance;
+    }
+
+    public void getTextInput() {
+        BarrowsLog log = BarrowsLog.getInstance();
+
+        if (!helmInput.getText().equals("")) {
+            log.addItem(itemList.get(0), Integer.parseInt(helmInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(0).getName() + " " + helmInput.getText() + "x to loot.");
+        }
+
+        if (!platebodyInput.getText().equals("")) {
+            log.addItem(itemList.get(1), Integer.parseInt(platebodyInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(1).getName() + " " + platebodyInput.getText() + "x to loot.");
+        }
+
+        if (!platelegsInput.getText().equals("")) {
+            log.addItem(itemList.get(2), Integer.parseInt(platelegsInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(2).getName() + " " + platelegsInput.getText() + "x to loot.");
+        }
+
+        if (!hammerInput.getText().equals("")) {
+            log.addItem(itemList.get(3), Integer.parseInt(hammerInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(3).getName() + " " + hammerInput.getText() + "x to loot.");
+
+        } else {
+            System.out.println("[CONSOLE]: Torag's loot is empty!");
+        }
+    }
+
+    public void resetText() {
+        helmInput.setText("");
+        platebodyInput.setText("");
+        platelegsInput.setText("");
+        hammerInput.setText("");
     }
 
     private void getInfo() {

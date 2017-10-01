@@ -1,6 +1,7 @@
 package com.akiraff.gui.barrows;
 
 import com.akiraff.api.Item;
+import com.akiraff.gui.BarrowsLog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,9 @@ import java.util.ArrayList;
 
 // Dharok the wretched
 public class DharokPanel extends JPanel {
+
+    private static DharokPanel ourInstance = new DharokPanel();
+
     private JLabel helmLabel = new JLabel("Dharok's helm: ");
     private JLabel platebodyLabel = new JLabel("Dharok's platebody: ");
     private JLabel platelegsLabel = new JLabel("Dharok's platelegs: ");
@@ -34,10 +38,50 @@ public class DharokPanel extends JPanel {
 
     private GridBagConstraints c = new GridBagConstraints();
 
-    public DharokPanel() {
+    private DharokPanel() {
+        setBorder(BorderFactory.createTitledBorder("Dharok the Wretched"));
         setLayout(new GridBagLayout());
         getInfo();
         addComponents();
+    }
+
+    public static DharokPanel getInstance() {
+        return ourInstance;
+    }
+
+    public void getTextInput() {
+        BarrowsLog log = BarrowsLog.getInstance();
+
+        if (!helmInput.getText().equals("")) {
+            log.addItem(itemList.get(0), Integer.parseInt(helmInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(0).getName() + " " + helmInput.getText() + "x to loot.");
+        }
+
+        if (!platebodyInput.getText().equals("")) {
+            log.addItem(itemList.get(1), Integer.parseInt(platebodyInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(1).getName() + " " + platebodyInput.getText() + "x to loot.");
+        }
+
+        if (!platelegsInput.getText().equals("")) {
+            log.addItem(itemList.get(2), Integer.parseInt(platelegsInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(2).getName() + " " + platelegsInput.getText() + "x to loot.");
+        }
+
+        if (!greataxeInput.getText().equals("")) {
+            log.addItem(itemList.get(3), Integer.parseInt(greataxeInput.getText()));
+            System.out.println("[CONSOLE]: Added " + itemList.get(3).getName() + " " + platelegsInput.getText() + "x to loot.");
+        }
+
+        else {
+            System.out.println("[CONSOLE]: Dharok's loot is empty!");
+        }
+    }
+
+    public void resetText() {
+        helmInput.setText("");
+        platebodyInput.setText("");
+        platelegsInput.setText("");
+        greataxeInput.setText("");
     }
 
     private void getInfo() {

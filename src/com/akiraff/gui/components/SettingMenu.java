@@ -1,6 +1,8 @@
 package com.akiraff.gui.components;
 
 import com.akiraff.api.Item;
+import com.akiraff.gui.BarrowsLog;
+import com.akiraff.gui.barrows.*;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -12,6 +14,8 @@ import java.util.Date;
 public class SettingMenu extends JMenuBar{
     private JMenu menu;
     private JMenu menuUpdatePrice;
+
+    private JMenuItem menuAdd;
     private JMenuItem menuAllPrice;
     private JMenuItem menuLogout;
     private JMenuItem menuAhrim;
@@ -43,11 +47,21 @@ public class SettingMenu extends JMenuBar{
     private Item dharokList[] = {new Item(4716), new Item(4718), new Item(4720), new Item(4722)};
     private Item veracList[] = {new Item(4753), new Item(4755), new Item(4757), new Item(4759)};
 
+    private AhrimPanel ahrimPanel = AhrimPanel.getInstance();
+    private AkrisaePanel akrisaePanel = AkrisaePanel.getInstance();
+    private DharokPanel dharokPanel = DharokPanel.getInstance();
+    private GuthanPanel guthanPanel = GuthanPanel.getInstance();
+    private KarilPanel karilPanel = KarilPanel.getInstance();
+    private VeracPanel veracPanel = VeracPanel.getInstance();
+
+
 
     public SettingMenu() {
         menu = new JMenu("Settings");
         menuUpdatePrice = new JMenu("Update Price");
+
         menuLogout = new JMenuItem("Logout");
+        menuAdd = new JMenuItem("Add Loot!");
 
         menuAllPrice = new JMenuItem("All Items");
         menuAhrim = new JMenuItem("Ahrim's Items");
@@ -70,9 +84,10 @@ public class SettingMenu extends JMenuBar{
         menuUpdatePrice.add(menuVerac);
 
         //Main menu
+        menu.add(menuAdd);
         menu.add(menuUpdatePrice);
         menu.add(menuLogout);
-        this.add(menu);
+        add(menu);
 
         addEventListenerMethod();
     }
@@ -90,6 +105,28 @@ public class SettingMenu extends JMenuBar{
         menuVerac.addActionListener(e -> updatePrice(veracList));
 
         menuLogout.addActionListener(e -> logoutMenu());
+
+        menuAdd.addActionListener(e -> {
+            BarrowsLog log = BarrowsLog.getInstance();
+            //Getting input from all tabs
+            ahrimPanel.getTextInput();
+            akrisaePanel.getTextInput();
+            dharokPanel.getTextInput();
+            guthanPanel.getTextInput();
+            karilPanel.getTextInput();
+            veracPanel.getTextInput();
+
+            //resetting input for all tabs
+            ahrimPanel.resetText();
+            akrisaePanel.resetText();
+            dharokPanel.resetText();
+            guthanPanel.resetText();
+            karilPanel.resetText();
+            veracPanel.resetText();
+
+            log.getItem();
+            log.emptyItem();
+        });
     }
 
     private void logoutMenu() {
@@ -100,15 +137,15 @@ public class SettingMenu extends JMenuBar{
         String sql = "UPDATE BarrowsTable SET price = ?, short_price = ?, last_updated = ? WHERE id = ? ";
 
         try(Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            for (int i = 0; i < item.length; i++) {
-                item[i].request();
-                pstmt.setInt(1, (int) item[i].getPrice());
-                pstmt.setString(2, item[i].getShortPrice());
+            for (Item i : item) {
+                i.request();
+                pstmt.setInt(1, (int) i.getPrice());
+                pstmt.setString(2, i.getShortPrice());
                 pstmt.setString(3, new Date().toString());
-                pstmt.setInt(4, item[i].getId());
+                pstmt.setInt(4, i.getId());
                 pstmt.executeUpdate();
 
-                System.out.println("[CONSOLE " + new Date() + "]: Updated for " + item[i].getName() + " price");
+                System.out.println("[CONSOLE " + new Date() + "]: Updated for " + i.getName() + " price");
             }
 
         } catch (SQLException e) {
